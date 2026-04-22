@@ -3,7 +3,7 @@
 This repository implements a machine learning pipeline for preeclampsia risk stratification based on age and Copeptin levels.
 
 > **Ethical Statement:**
-> All clinical data used in this pipeline consist of synthetic values derived from reported literature means. No Protected Health Information (PHI) or real patient records were utilized. This project is intended for methodology demonstration and educational purposes.
+> All clinical data used in this pipeline consist of synthetic values derived from reported literature means. No Protected Health Information (PHI) or real patient records were utilized. This project is intended for methodology demonstration and educational purposes. It is not a diagnostic tool for clinical use.
 
 ## Project Architecture
 - **01_data_generation.py**: Generates a synthetic cohort (n=1000) based on clinical parameters.
@@ -15,6 +15,12 @@ This repository implements a machine learning pipeline for preeclampsia risk str
 1. Install dependencies: `pip install -r requirements.txt`
 2. Execute the data-to-model pipeline: `python3 01_data_generation.py && python3 02_train_model.py`
 3. Initialize the inference service: `python3 04_app_api.py`
+
+## Cloud Deployment (Recommendation)
+This application is "containerized" via Docker for cloud scalability. Recommended stack:
+- **Registry:** Amazon ECR (Elastic Container Registry)
+- **Orchestration:** Amazon ECS (Elastic Container Service) with AWS Fargate (Serverless)
+- **Infrastructure:** Load Balanced for high availability.
 
 ## API Inference Example (CURL)
 ```bash
