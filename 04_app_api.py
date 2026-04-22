@@ -5,34 +5,30 @@ import numpy as np
 import os
 
 app = FastAPI()
-
-# Isso faz o Python descobrir onde ele mesmo está guardado
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, 'modelo_rf_preeclampsia.joblib')
-SCALER_PATH = os.path.join(BASE_DIR, 'scaler_robusto.joblib')
 
-model = joblib.load(MODEL_PATH)
-scaler = joblib.load(SCALER_PATH)
+# Carrega o modelo e o scaler atualizados
+model = joblib.load(os.path.join(BASE_DIR, 'modelo_rf_preeclampsia.joblib'))
+scaler = joblib.load(os.path.join(BASE_DIR, 'scaler_robusto.joblib'))
 
 class PredictionInput(BaseModel):
     Age: float
-    Iq1: float
-    Iq3: float
     Copeptin: float
 
 @app.post("/predict")
 def predict(data: PredictionInput):
-    features = np.array([[data.Age, data.Iq1, data.Iq3, data.Copeptin]])
+    # Processa apenas os dois parâmetros atuais
+    features = np.array([[data.Age, data.Copeptin]])
     features_scaled = scaler.transform(features)
     prediction = int(model.predict(features_scaled)[0])
-    probabilities = model.predict_proba(features_scaled)[0].tolist()
-
+    prob = model.predict_proba(features_scaled)[0].tolist()
+    
     return {
         "prediction": prediction,
-        "probability": probabilities,
+        "probability": prob,
         "recommendation": "Alto Risco" if prediction == 1 else "Baixo Risco"
     }
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=8000)
