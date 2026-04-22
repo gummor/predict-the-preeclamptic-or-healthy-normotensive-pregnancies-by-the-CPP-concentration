@@ -1,0 +1,12 @@
+# Dados e Modelos (Segurança e Ética)
+*.csv
+*.joblib
+*.db
+
+# Arquivos do Sistema Mac
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+.env
