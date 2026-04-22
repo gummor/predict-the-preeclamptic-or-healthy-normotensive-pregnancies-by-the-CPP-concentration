@@ -1,50 +1,32 @@
 import pandas as pd
-import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import classification_report, accuracy_score
 import joblib
 
-def train_preeclampsia_model(csv_path='clean_dataset.csv'):
-    # Carga de dados
-    try:
-        df = pd.read_csv(csv_path)
-    except FileNotFoundError:
-        print("Erro: clean_dataset.csv não encontrado. Rode o Script 1 primeiro.")
-        return
-
-    # Preparação das Features (X) e Alvo (y)
-    features = ['Age', 'Iq1', 'Iq3', 'Copeptin']
-    X = df[features]
-    y = df['Diagnosis_Group']
-    weights = df['N']
-
-    # Divisão treino e teste (80/20)
-    X_train, X_test, y_train, y_test, w_train, w_test = train_test_split(
-        X, y, weights, test_size=0.2, random_state=42, stratify=y
-    )
-
-    # Padronização (Essencial para a API)
+def train_preeclampsia_model():
+    print("=== Iniciando treinamento do modelo ===")
+    df = pd.read_csv('clean_dataset.csv')
+    
+    X = df.drop('Diagnosis', axis=1)
+    y = df['Diagnosis']
+    
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
-
-    # Treinamento do Modelo
-    model = RandomForestClassifier(n_estimators=100, random_state=42)
-    model.fit(X_train_scaled, y_train, sample_weight=w_train)
-
-    # Avaliação
+    
+    model = RandomForestClassifier(n_estimators=200, max_depth=10, random_state=42)
+    model.fit(X_train_scaled, y_train)
+    
     y_pred = model.predict(X_test_scaled)
-    print("--- Métricas do Modelo ---")
-    print(f"Acurácia: {accuracy_score(y_test, y_pred):.4f}")
-    print("\nRelatório de Classificação:")
-    print(classification_report(y_test, y_pred))
-
-    # Salvando os arquivos para a API (Os artefatos)
-    joblib.dump(model, 'preeclampsia_model.joblib')
-    joblib.dump(scaler, 'preeclampsia_scaler.joblib')
-    print(f"\n✅ Sucesso: Artefatos salvos (.joblib)")
+    print("\nRelatório de Classificação:\n", classification_report(y_test, y_pred))
+    
+    joblib.dump(model, 'modelo_rf_preeclampsia.joblib')
+    joblib.dump(scaler, 'scaler_robusto.joblib')
+    print("Artefatos salvos: 'modelo_rf_preeclampsia.joblib' e 'scaler_robusto.joblib'")
 
 if __name__ == "__main__":
     train_preeclampsia_model()
