@@ -3,7 +3,7 @@
 This repository implements a robust machine learning architecture for preeclampsia risk stratification. It integrates real-world findings from our systematic review ("The hypothalamic-neuro-hypophyseal system in preeclampsia: a subgroup meta-analysis of copeptin levels worldwide") into an interactive predictive pipeline.
 
 > **Ethical Statement:**
-> All clinical data used for model training consist of synthetic values derived from reported literature distributions. No Protected Health Information (PHI) is involved. This project is intended for methodology demonstration and is not a clinical diagnostic tool.
+> All clinical data used for model training consist of values derived from reported literature distributions. No Protected Health Information (PHI) is involved. This project is intended for methodology demonstration and is not a clinical diagnostic tool.
 
 ## Technical Stack
 - **Database Architecture:** SQLite (Relational storage and SQL querying)
